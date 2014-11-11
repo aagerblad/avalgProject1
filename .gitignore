@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+
+avalgProject1.xcodeproj
+*.xcodeproj
