@@ -17,20 +17,23 @@ public:
 	std::vector<long long> getAllFactors() {
 		std::vector<long long> v;
 		long long n = startValue;
+		long long newStart = n;
 		long long x_0 = 2;
 		while (n != 1) {
 			long long factor = calculateFactor(n, x_0);
-			if (factor == -1) {
-				v.clear();	
-				n = startValue;
+			if (factor < 1) {
+				// v.clear();	
+				// n = newStart;
 				++x_0;
-				cout << x_0 << endl;
+				// cout << x_0 << endl;
 			} else {
 				v.push_back(factor);
 				n = n/factor;
+				// newStart = n;
+				x_0 = 2;
 			}
 		}
-
+		cout << x_0 << endl;
 		return v;
 	}
 
