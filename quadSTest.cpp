@@ -1,7 +1,5 @@
 #include <iostream>
-#include "pollardRho.cpp"
 #include "quadS.cpp"
-//#include <gmpxx.h>
 using namespace std;
 
 int g(int a, int n) {
@@ -22,10 +20,10 @@ int main(int argc, const char * argv[])
 {
     
     //    qs hej("1232");
-    mpz_t N, B;
+    mpz_t N, B, temp_matrix_row;
     mpz_init(N);
     mpz_init(B);
-    mpz_set_str(N, "87463", 10);
+    mpz_set_str(N, "6", 10);
     
     
     quadS qs(N);
@@ -43,6 +41,15 @@ int main(int argc, const char * argv[])
     qs.generateModularRoots();
     qs.printModularRoots();
     
+    qs.matrix_init(w, w);
+    mpz_init2(temp_matrix_row, w);
+    
+    cout << "Start sieving" << endl;
+    qs.sieve();
+    cout << "Start gauss" << endl;
+    qs.gauss_elimination();
+    cout << "Start factorization" << endl;
+    qs.factor();
     
     
     
