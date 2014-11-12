@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "miller_rabin.h"
 using namespace std;
 
 class pollardRho
@@ -17,20 +18,25 @@ public:
 	std::vector<long long> getAllFactors() {
 		std::vector<long long> v;
 		long long n = startValue;
+		long long newStart = n;
 		long long x_0 = 2;
 		while (n != 1) {
 			long long factor = calculateFactor(n, x_0);
-			if (factor == -1) {
-				v.clear();	
-				n = startValue;
+			// cout << "Calculated factor " << factor << endl;
+			if (factor < 1 || !Miller(factor, 5)) {
+				// cout << "Bad factor " << factor << endl;
+				// v.clear();	
+				// n = newStart;
 				++x_0;
-				cout << x_0 << endl;
+				// cout << x_0 << endl;
 			} else {
 				v.push_back(factor);
 				n = n/factor;
+				// newStart = n;
+				x_0 = 2;
 			}
 		}
-
+		cout << x_0 << endl;
 		return v;
 	}
 
@@ -42,21 +48,22 @@ public:
 
 		// x_i = g(x_0);
 		// rValue = gcd(x_i - x_0, n);
+		int iteration = 5;
 		
 		while (rValue == 1) {
-			
 			long long count = 1;
 			while (count <= cycle_size && rValue == 1) {
 				++count;
 				x_i = g(n, x_i);
 				rValue = gcd(x_i - x_0, n);
 			}
-	
-			if (rValue != 1)
+
+			if (Miller(rValue, iteration)) 
 				break;
-	
+			
 			cycle_size *= 2;
-			x_0 = x_i;
+			x_0 = x_i;	
+			
 
 		}
 	
