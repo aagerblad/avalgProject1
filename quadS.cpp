@@ -225,6 +225,7 @@ public:
     
     
     /* 1. Generate factor base */
+    // TODO kanske ha en tabell istället? Äh, tar inte så långt tid tror jag.
     
     void generateFactorBase(mpz_t B, mpz_t N) {
         mpfr_t fN, lnN, lnlnN;
@@ -246,6 +247,125 @@ public:
     }
     
     /* 2. Generate modular roots (solve equation) */
+    
+//    void CRT(mpz_t res, mpz_t N, mpz_t p){
+//        
+//        mpz_t M;
+//        mpz_set_ui(M, 1);
+//        mpz_mul(M, M, p);
+//        vector< long long > m, s;
+//        for(int i=0; i<int(mods.size()); i++){
+//            m.push_back(M/mods[i]);
+//            long long temp=m[i]%mods[i];
+//            long long k=0;
+//            /* if there is a possibility of k being very big, then prime factorize m[i],
+//             * find modular inverse of 'temp' of each of the factors
+//             * 'k' equals to the multiplication ( modular mods[i] ) of modular inverses
+//             */
+//            while(true){
+//                if((k*temp)%mods[i]==1) break;
+//                k++;
+//            }
+//            s.push_back(k);
+//        }
+//        long long ret=0;
+//        for(int i=0; i<int(s.size()); i++) {
+//            ret+=( (m[i]*s[i])%M *r[i] )%M;
+//            if(ret>=M) ret-=M;
+//        }
+//    }
+    
+    void legendre(mpz_t r1, mpz_t N, mpz_t p) {
+        mpz_t a;
+        mpz_init(a);
+        mpz_set_ui(r1, 1);
+        
+        mpz_mod(a, N, p);
+        unsigned long pu;
+        pu = mpz_get_ui(p);
+        long power = (pu-1)/2;
+        
+        while (power > 0) {
+            if (power % 2 == 1) {
+//                unsigned int res = 1;
+                mpz_mul(r1, r1, a);
+                mpz_mod(r1, r1, p);
+//                mpz_set_ui
+            }
+            
+            mpz_mul(a, a, a);
+            mpz_mod(a, a, p);
+            power = power / 2;
+        }
+        
+        mpz_t tmp;
+        mpz_init(tmp);
+        mpz_sub(tmp, r1, p);
+        if (mpz_cmp_ui(tmp, -1) == 0) {
+            mpz_sub(r1, r1, p);
+        }
+        
+        
+    }
+    
+    int shanksAndTonelli(mpz_t q, const mpz_t n, const mpz_t p) {
+        mpz_t w, n_inv, y;
+        unsigned int i, s;
+
+        if(mpz_divisible_p(n, p)) {        
+            mpz_set_ui(q, 0);
+            return 1;
+        }
+   
+        if(mpz_tstbit(p, 1) == 1) {
+            mpz_set(q, p);
+            mpz_add_ui(q, q, 1);
+            mpz_fdiv_q_2exp(q, q, 2);
+            mpz_powm(q, n, q, p);
+            return 1;
+        }
+        mpz_init(y);
+        mpz_init(w);
+        mpz_init(n_inv);
+        
+        mpz_set(q, p);
+        mpz_sub_ui(q, q, 1);
+        s = 0;
+        while(mpz_tstbit(q, s) == 0) s++;
+        mpz_fdiv_q_2exp(q, q, s);
+        mpz_set_ui(w, 2);
+        while(mpz_legendre(w, p) != -1)
+            mpz_add_ui(w, w, 1);
+        mpz_powm(w, w, q, p);
+        mpz_add_ui(q, q, 1);
+        mpz_fdiv_q_2exp(q, q, 1);
+        mpz_powm(q, n, q, p);
+        mpz_invert(n_inv, n, p);
+        for(;;) {
+            mpz_powm_ui(y, q, 2, p);
+            mpz_mul(y, y, n_inv);
+            mpz_mod(y, y, p);
+            i = 0;
+            while(mpz_cmp_ui(y, 1) != 0) {
+                i++;
+                mpz_powm_ui(y, y, 2, p);
+            }
+            if(i == 0) {
+                return 1;
+            }
+            if(s-i == 1) {
+                mpz_mul(q, q, w);
+            } else {
+                mpz_powm_ui(y, w, 1 << (s-i-1), p);
+                mpz_mul(q, q, y);
+            }
+            mpz_mod(q, q, p);
+        }
+        
+        mpz_clear(w); mpz_clear(n_inv); mpz_clear(y);
+        return 0;
+    }
+    
     void generateModularRoots() {
 //        modular_roots = new modular_root[quadraticPrimesFound];
         mpz_t tmp, r1, r2;
@@ -256,14 +376,17 @@ public:
         
         for (int i = 0; i < quadraticPrimesFound; i++) {
             mpz_set_ui(tmp, (unsigned long) basePrimes[i]);
-            // TODO är detta verkligen modular root?
-            // modular square roots using Shanks-Tonelli tydligen
-            mpz_sqrtrem(r1, N, tmp); /* calculate the modular root */
+            
+            shanksAndTonelli(r1, N, tmp);
             mpz_neg(r2, r1); /* -q mod n */
             mpz_mod(r2, r2, tmp);
-
+            
+            cout << "Base P: " << basePrimes[i];
+            
             modular_roots[i].root1 = mpz_get_ui(r1);
             modular_roots[i].root2 = mpz_get_ui(r2);
+            
+            cout << " <--> " << modular_roots[i].root1 << " and " << modular_roots[i].root2 << endl;
         }
         cout << "Modular roots: " << modular_roots.size() << endl;
         mpz_clear(tmp);

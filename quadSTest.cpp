@@ -23,7 +23,8 @@ int main(int argc, const char * argv[])
     mpz_t N, B, temp_matrix_row;
     mpz_init(N);
     mpz_init(B);
-    mpz_set_str(N, "6", 10);
+//    mpz_set_str(N, "9207215733000000000000000000000000000000000000000000000000000000000000", 10);
+    mpz_set_str(N, "7", 10);
     
     
     quadS qs(N);
@@ -39,7 +40,7 @@ int main(int argc, const char * argv[])
     int64_t w = qs.fill_primes_with_quadratic_residue(N);
     cout << "Quadtratic primes found: " <<  w << endl;
     qs.generateModularRoots();
-    qs.printModularRoots();
+//    qs.printModularRoots();
     
     qs.matrix_init(w, w);
     mpz_init2(temp_matrix_row, w);
