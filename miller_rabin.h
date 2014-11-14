@@ -4,19 +4,20 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
-#define ll long long
+#include <gmpxx.h>
+//#define ll long long
 using namespace std;
  
 /* 
  * calculates (a * b) % c taking into account that a * b might overflow 
  */
-ll mulmod(ll a, ll b, ll mod);
+void mulmod(mpz_t res, mpz_t a, mpz_t b, mpz_t mod);
 /* 
  * modular exponentiation
  */
-ll modulo(ll base, ll exponent, ll mod);
+void modulo(mpz_t res, mpz_t base, mpz_t exponent, mpz_t mod);
  
 /*
  * Miller-Rabin primality test, iteration signifies the accuracy
  */
-bool Miller(ll p,int iteration);
+bool Miller(mpz_t p, int iteration);
