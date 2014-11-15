@@ -19,7 +19,7 @@ void print(mpz_class a) {
 /*
  * calculates (a * b) % c taking into account that a * b might overflow
  */
-void mulmod(mpz_class res, mpz_class a, mpz_class b, mpz_class mod)
+mpz_class mulmod(mpz_class a, mpz_class b, mpz_class mod)
 {
     mpz_class x, y;
 //    mpz_init(x);
@@ -51,12 +51,12 @@ void mulmod(mpz_class res, mpz_class a, mpz_class b, mpz_class mod)
     }
 //    return x % mod;
 //    mpz_mod(res, x, mod);
-    res = x % mod;
+    return x % mod;
 }
 /* 
  * modular exponentiation
  */
-void modulo(mpz_class res, mpz_class base, mpz_class e, mpz_class mod)
+mpz_class modulo(mpz_class base, mpz_class e, mpz_class mod)
 {
     mpz_class exponent;
 //    mpz_init(exponent);
@@ -89,7 +89,7 @@ void modulo(mpz_class res, mpz_class base, mpz_class e, mpz_class mod)
         exponent = exponent / 2;
     }
 //    mpz_mod(res, x, mod);
-    res = x % mod;
+    return x % mod;
 }
  
 /*
@@ -98,87 +98,54 @@ void modulo(mpz_class res, mpz_class base, mpz_class e, mpz_class mod)
 bool Miller(mpz_class p,int iteration)
 {
     
+    if (p == sqrt(p) * sqrt(p)) {
+//            if (sqrt(p)==floor(sqrt(p))) {
+        cout << "Hej tobbe: " << sqrt(p) << endl;
+        return false;
+    }
+    
     if (p < 2)
     {
         return false;
     }
     
-//    if (p == 3) {
-//        return false;
-//    }
-    mpz_class tmp;
-//    mpz_init(tmp);
-//    mpz_mod_ui(tmp, p, 2);
-    tmp = p % 2;
-    if (p != 2 && tmp == 0)
+    if (p != 2 && p % 2 == 0)
     {
         return false;
     }
-    mpz_class s;
-//    mpz_init(s);
-//    mpz_sub_ui(s, p, 1);
-    s = p - 1;
-//    mpz_mod_ui(tmp, s, 2);
-    tmp = s % 2;
-    while (tmp == 0)
+    
+    if (p == 2 || p == 3)
+        return true;
+    
+    mpz_class s = p-1;
+    while (s % 2 == 0)
     {
-//        mpz_div_ui(s, s, 2);
-//        mpz_mod_ui(tmp, s, 2);
         s /= 2;
-        tmp = s % 2;
     }
+    
     for (int i = 0; i < iteration; i++)
     {
-//        ll a = rand() % (p - 1) + 1, temp = s;
         mpz_class a;
-//        mpz_init(a);
+        
         gmp_randstate_t r;
         gmp_randinit_default(r);
-        unsigned long int seed;
-        seed = rand();
-        gmp_randseed_ui(r, seed);
+        gmp_randseed_ui(r, rand());
         
-//        mpz_class ran;
         gmp_randclass rr(gmp_randinit_default);
+        
         rr.seed(time(NULL));
         a = rr.get_f();
-//        ran =rr.get_z_bits(125);
-//        long int random=ran.get_ui();
+        a = (a % (p-1)) + 1;
+        mpz_class temp = s;
+        mpz_class mod = modulo(a, temp, p);
         
-//        mpz_urandomm(a, r, p);
-//        mpz_set(tmp, s);
-        tmp = s;
-        mpz_class mod;
-//        mpz_init(mod);
-        modulo(mod, a, tmp, p);
-//        print(tmp);
-//        ll mod = modulo(a, temp, p);
-        mpz_class p_1; // mpz_init(p_1);
-//        mpz_sub_ui(p_1, p, 1);
-        p_1 = p - 1;
-//        bool arg1 = mpz_cmp(tmp, p_1) != 0;
-//        bool arg2 = mpz_cmp_ui(mod, 1) != 0;
-//        bool arg3 = mpz_cmp(mod, p_1) != 0;
-        while (tmp != p_1 && mod != 1 && mod != p_1)
+        while (temp != p-1 && mod != 1 && mod != p-1)
         {
-            mulmod(mod, mod, mod, p);
-//            mod = mulmod(mod, mod, p);
-//            mpz_mul_ui(tmp, tmp, 2);
-            tmp *= 2;
-//            cout << "mod: ";
-//            print(mod);
-//            cout << "tmp: ";
-//            print(tmp);
-//            arg1 = mpz_cmp(tmp, p_1) != 0;
-//            arg2 = mpz_cmp_ui(mod, 1) != 0;
-//            arg3 = mpz_cmp(mod, p_1) != 0;
+            mod = mulmod(mod, mod, p);
+            temp *= 2;
         }
-//        arg1 = mpz_cmp(mod, p_1) != 0;
-        mpz_class tmpMod2; //mpz_init(tmpMod2);
-        //mpz_mod_ui(tmpMod2, tmp, 2);
-        tmpMod2 = tmp % 2;
-//        arg2 = mpz_cmp_ui(tmpMod2, 0) == 0;
-        if (mod != p_1 && tmpMod2 == 0)
+        
+        if (mod != p-1 && temp % 2 == 0)
         {
             return false;
         }
