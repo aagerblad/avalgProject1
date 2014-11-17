@@ -43,7 +43,7 @@ private:
     } smooth_number_t;
     
     // Quadtratic sieve members
-    vector<int64_t> basePrimes;
+    static vector<int64_t> basePrimes;
     vector<modular_root> modular_roots;
     mpz_t N;
     mpz_t B;
@@ -809,7 +809,7 @@ public:
         return mpz_get_ui(v);
     }
     
-    vector<int64_t> getPrimes() {
+    static vector<int64_t> getPrimes() {
         return basePrimes;
     }
     
