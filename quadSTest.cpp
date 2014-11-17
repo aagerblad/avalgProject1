@@ -173,6 +173,7 @@ int main(int argc, const char * argv[])
         mpz_class tmp(primes[i]);
         PRIMES.push_back(tmp);
     }
+    cout << "PRIME NUMBERS: " << primeobject.size() << endl;
     primeobject.clear();
 //    deallocate_primes();
     mpz_t B;
@@ -181,11 +182,11 @@ int main(int argc, const char * argv[])
     //  mpz_init(B);
     //    mpz_set_str(N, "9207215733000000000000000000000000000000000000000000000000000000000000", 10);
     //    mpz_set_str(N, "92072157330000000000000000000000000000000", 10);
-    //    mpz_set_str(N, "8741261238172833231", 10);
+    //    mpz_set_str(N, "198298378197198278172312312", 10);
     //    mpz_set_str(N, "96573982938235691", 10);
     
     //    mpz_class N("96573982938235692");
-    mpz_class N("9207215733000000000000000000000000000000000000000000000000000000000001");
+    mpz_class N("920721573300000000000000000000000000000000000000000000000000000000000000000000000000000100");
     
     
     
@@ -221,7 +222,7 @@ fromTheTop:
             continue;
         
         //        if (Miller(n, 10000)) { // vadå klarar inte Miller av att säga att 5 är prim?
-        if (mpz_probab_prime_p(n_t, 25)) {
+        if (mpz_probab_prime_p(n_t, 5)) {
             cout << "Storing (miller says prime): " << n;
             cout << endl;
             result.push_back(n);
@@ -242,7 +243,7 @@ fromTheTop:
             
         retry:
             
-            if (retries > 5 || n < 10048576) {
+            if (retries > 2 || n < 10048576) {
                 cout <<"*************Pollard*************" << endl;
                 
                 mpz_t x_p, y_p;
@@ -280,25 +281,24 @@ fromTheTop:
             cout << "Start gauss" << endl;
             qs.gauss_elimination();
             cout << "Start factorization" << endl;
+
             qs.factor();
             
             
-            mpz_t x, y;
-            mpz_init(x); mpz_init(y);
-            qs.fetch_answers(x, y);
+            mpz_class x, y;
+            x = qs.fetchX();
+            y = qs.fetchY();
+//            mpz_init(x); mpz_init(y);
+//            qs.fetch_answers(x, y);
             
-            cout << "(x,y): ";
-            printis(x);
-            cout << ", ";
-            printis(y);
-            cout << endl;
+            cout << "(x,y): " << x << " * " << y << endl;
             
-            mpz_class tmp_x(x);
-            mpz_class tmp_y(y);
+//            mpz_class tmp_x(x);
+//            mpz_class tmp_y(y);
             
-            if (tmp_x != n && tmp_x != 1) {
-                cand_q.push(tmp_x);
-                cand_q.push(tmp_y);
+            if (x != n && x != 1) {
+                cand_q.push(x);
+                cand_q.push(y);
             } else {
                 mpz_add(B, B, B);
                 cout << "Retrying with b: ";

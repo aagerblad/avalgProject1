@@ -56,13 +56,13 @@ private:
     
     matrix_t matrix;
     mpz_t tmp_matrix_row;
-
-    int vec_offset;
+    
+    int vec_offset = 5;
     
     smooth_number_t *smooth_numbers;
-
-    mpz_t solution_X, solution_Y;
-
+    
+    mpz_class solution_X, solution_Y;
+    
     // Eratosthenes members
     char *numbers;
     int64_t base_ref;
@@ -73,11 +73,11 @@ public:
     quadS() {}
     
     ~quadS() {
-//        delete[] modular_roots;
-//        delete[] matrix.MATRIX;
-//        delete[] matrix.IDENTITY;
-//        delete[] numbers;
-//        delete[] smooth_numbers;
+        //        delete[] modular_roots;
+        //        delete[] matrix.MATRIX;
+        //        delete[] matrix.IDENTITY;
+        //        delete[] numbers;
+        //        delete[] smooth_numbers;
     }
     
     quadS(mpz_t N) {
@@ -126,7 +126,7 @@ public:
     void matrix_init(uint64_t m, uint64_t n) {
         m = m + vec_offset;
         matrix.MATRIX = (mpz_t *) calloc(m, sizeof(mpz_t));
-//        cout << "M!!!!!!!!!!!!!! " << m << endl;
+        //        cout << "M!!!!!!!!!!!!!! " << m << endl;
         matrix.IDENTITY = (mpz_t *) calloc(m, sizeof(mpz_t));
         matrix.rows = m;
         matrix.cols = n;
@@ -219,11 +219,11 @@ public:
     }
     
     void get_identity_row(mpz_t r, uint64_t row_index) {
-//        cout << "ROW INDEX: " << row_index << endl;
+        //        cout << "ROW INDEX: " << row_index << endl;
         mpz_t newskit; mpz_init(newskit);
         mpz_set(newskit, r);
-//        print(newskit);
-//        print(matrix.IDENTITY[row_index]);
+        //        print(newskit);
+        //        print(matrix.IDENTITY[row_index]);
         mpz_set(newskit, matrix.IDENTITY[row_index]);
     }
     
@@ -252,82 +252,82 @@ public:
         
         mpfr_get_z(B, fN, MPFR_RNDU);
         
-//        mpz_set_ui(B, 80711); // TODO temp, ska man välja denna själv?
+//        mpz_set_ui(B, 100000); // TODO temp, ska man välja denna själv?
         mpfr_clears(fN, lnN, lnlnN, NULL);
         
     }
     
     /* 2. Generate modular roots (solve equation) */
     
-//    void CRT(mpz_t res, mpz_t N, mpz_t p){
-//        
-//        mpz_t M;
-//        mpz_set_ui(M, 1);
-//        mpz_mul(M, M, p);
-//        vector< long long > m, s;
-//        for(int i=0; i<int(mods.size()); i++){
-//            m.push_back(M/mods[i]);
-//            long long temp=m[i]%mods[i];
-//            long long k=0;
-//            /* if there is a possibility of k being very big, then prime factorize m[i],
-//             * find modular inverse of 'temp' of each of the factors
-//             * 'k' equals to the multiplication ( modular mods[i] ) of modular inverses
-//             */
-//            while(true){
-//                if((k*temp)%mods[i]==1) break;
-//                k++;
-//            }
-//            s.push_back(k);
-//        }
-//        long long ret=0;
-//        for(int i=0; i<int(s.size()); i++) {
-//            ret+=( (m[i]*s[i])%M *r[i] )%M;
-//            if(ret>=M) ret-=M;
-//        }
-//    }
+    //    void CRT(mpz_t res, mpz_t N, mpz_t p){
+    //
+    //        mpz_t M;
+    //        mpz_set_ui(M, 1);
+    //        mpz_mul(M, M, p);
+    //        vector< long long > m, s;
+    //        for(int i=0; i<int(mods.size()); i++){
+    //            m.push_back(M/mods[i]);
+    //            long long temp=m[i]%mods[i];
+    //            long long k=0;
+    //            /* if there is a possibility of k being very big, then prime factorize m[i],
+    //             * find modular inverse of 'temp' of each of the factors
+    //             * 'k' equals to the multiplication ( modular mods[i] ) of modular inverses
+    //             */
+    //            while(true){
+    //                if((k*temp)%mods[i]==1) break;
+    //                k++;
+    //            }
+    //            s.push_back(k);
+    //        }
+    //        long long ret=0;
+    //        for(int i=0; i<int(s.size()); i++) {
+    //            ret+=( (m[i]*s[i])%M *r[i] )%M;
+    //            if(ret>=M) ret-=M;
+    //        }
+    //    }
     
-//    void legendre(mpz_t r1, mpz_t N, mpz_t p) {
-//        mpz_t a;
-//        mpz_init(a);
-//        mpz_set_ui(r1, 1);
-//        
-//        mpz_mod(a, N, p);
-//        unsigned long pu;
-//        pu = mpz_get_ui(p);
-//        long power = (pu-1)/2;
-//        
-//        while (power > 0) {
-//            if (power % 2 == 1) {
-////                unsigned int res = 1;
-//                mpz_mul(r1, r1, a);
-//                mpz_mod(r1, r1, p);
-////                mpz_set_ui
-//            }
-//            
-//            mpz_mul(a, a, a);
-//            mpz_mod(a, a, p);
-//            power = power / 2;
-//        }
-//        
-//        mpz_t tmp;
-//        mpz_init(tmp);
-//        mpz_sub(tmp, r1, p);
-//        if (mpz_cmp_ui(tmp, -1) == 0) {
-//            mpz_sub(r1, r1, p);
-//        }
-//        
-//        
-//    }
+    //    void legendre(mpz_t r1, mpz_t N, mpz_t p) {
+    //        mpz_t a;
+    //        mpz_init(a);
+    //        mpz_set_ui(r1, 1);
+    //
+    //        mpz_mod(a, N, p);
+    //        unsigned long pu;
+    //        pu = mpz_get_ui(p);
+    //        long power = (pu-1)/2;
+    //
+    //        while (power > 0) {
+    //            if (power % 2 == 1) {
+    ////                unsigned int res = 1;
+    //                mpz_mul(r1, r1, a);
+    //                mpz_mod(r1, r1, p);
+    ////                mpz_set_ui
+    //            }
+    //
+    //            mpz_mul(a, a, a);
+    //            mpz_mod(a, a, p);
+    //            power = power / 2;
+    //        }
+    //
+    //        mpz_t tmp;
+    //        mpz_init(tmp);
+    //        mpz_sub(tmp, r1, p);
+    //        if (mpz_cmp_ui(tmp, -1) == 0) {
+    //            mpz_sub(r1, r1, p);
+    //        }
+    //
+    //
+    //    }
     
     int shanksAndTonelli(mpz_t q, const mpz_t n, const mpz_t p) {
         mpz_t w, n_inv, y;
         unsigned int i, s;
-
-        if(mpz_divisible_p(n, p)) {        
+        
+        if(mpz_divisible_p(n, p)) {
             mpz_set_ui(q, 0);
             return 1;
         }
-   
+        
         if(mpz_tstbit(p, 1) == 1) {
             mpz_set(q, p);
             mpz_add_ui(q, q, 1);
@@ -335,9 +335,9 @@ public:
             mpz_powm(q, n, q, p);
             return 1;
         }
-            mpz_init(y);
-            mpz_init(w);
-            mpz_init(n_inv);
+        mpz_init(y);
+        mpz_init(w);
+        mpz_init(n_inv);
         
         mpz_set(q, p);
         mpz_sub_ui(q, q, 1);
@@ -380,7 +380,7 @@ public:
     }
     
     void generateModularRoots() {
-//        modular_roots = new modular_root[quadraticPrimesFound];
+        //        modular_roots = new modular_root[quadraticPrimesFound];
         mpz_t tmp, r1, r2;
         modular_roots.resize(quadraticPrimesFound);
         
@@ -394,12 +394,12 @@ public:
             mpz_neg(r2, r1); /* -q mod n */
             mpz_mod(r2, r2, tmp);
             
-//            cout << "Base P: " << basePrimes[i];
+            //            cout << "Base P: " << basePrimes[i];
             
             modular_roots[i].root1 = mpz_get_ui(r1);
             modular_roots[i].root2 = mpz_get_ui(r2);
             
-//            cout << " <--> " << modular_roots[i].root1 << " and " << modular_roots[i].root2 << endl;
+            //            cout << " <--> " << modular_roots[i].root1 << " and " << modular_roots[i].root2 << endl;
         }
         cout << "Modular roots: " << modular_roots.size() << endl;
         mpz_clear(tmp);
@@ -452,7 +452,7 @@ public:
                                                                * and reconstruct the original number */
         
         smooth_numbers[smoothNmbrsFound++] = tmp;
-
+        
         
         /* the coefficient vector in GF2 has already been constructed */
         matrix_push_row(n.factors_vect);
@@ -460,7 +460,7 @@ public:
     
     void sieve() {
         mpz_t x, sieving_index, next_sieving_index;
-        unsigned long SIEVING_STEP = 50000; /* we sieve for 50000 elements at each loop */
+        unsigned long SIEVING_STEP = 500000; /* we sieve for 50000 elements at each loop */
         uint64_t p_pow;
         smooth_number_t *x_squared;
         
@@ -488,7 +488,7 @@ public:
         }
         
         int nb_smooth_per_round = 0;
-//        char s[512];
+        //        char s[512];
         
         cout << "sieving..." << endl;
         
@@ -497,8 +497,8 @@ public:
             mpz_set(x, next_sieving_index); /* sieve numbers from sieving_index to sieving_index + sieving_step */
             mpz_set(sieving_index, next_sieving_index);
             
-//            fflush(stdout);
-//            cout << "hej" << endl;
+            //            fflush(stdout);
+            //            cout << "hej" << endl;
             for (int i = 0; i < SIEVING_STEP; i++) {
                 mpz_set(x_squared[i].value_x, x);
                 
@@ -532,10 +532,10 @@ public:
                     {
                         mpz_setbit(x_squared[j].factors_vect, i);
                     }
-//                    print(x_squared[j].value_x); // TODO remove
+                    //                    print(x_squared[j].value_x); // TODO remove
                     
                     if (mpz_cmp_ui(x_squared[j].value_x_squared, 1) == 0) {
-//                        cout << "saving smooth" << endl;
+                        //                        cout << "saving smooth" << endl;
                         cout << ".";
                         save_smooth_number(x_squared[j]);
                         nb_smooth_per_round++;
@@ -586,57 +586,83 @@ public:
         }
         
         printf("\nFactorizing..\n");
-        mpz_init(solution_X);
-        mpz_init(solution_Y);
+//        mpz_init(solution_X);
+//        mpz_init(solution_Y);
         
         /* we start testing from the first linear relation encountered in the matrix */
         for (int j = nb_linear_relations; j > 0; j--) {
-//            printf("Trying %d..\n", nb_linear_relations - j + 1);
-            mpz_set_ui(solution_X, 1);
-            mpz_set_ui(solution_Y, 1);
+            //            printf("Trying %d..\n", nb_linear_relations - j + 1);
+//            mpz_set_ui(solution_X, 1);
+//            mpz_set_ui(solution_Y, 1);
+            solution_X = 1;
+            solution_Y = 1;
             
             get_identity_row(solution_z,
                              quadraticPrimesFound + vec_offset - j + 1);
             
             for (int i = 0; i < quadraticPrimesFound; i++) {
                 if (mpz_tstbit(solution_z, i)) {
-                    mpz_mul(solution_X, solution_X, smooth_numbers[i].value_x);
-                    mpz_mod(solution_X, solution_X, N); /* reduce x to modulo N */
+//                    mpz_mul(solution_X, solution_X, smooth_numbers[i].value_x);
+                    mpz_class tempis(smooth_numbers[i].value_x);
+                    solution_X = solution_X * tempis;
                     
-                    mpz_mul(solution_Y, solution_Y,
-                            smooth_numbers[i].value_x_squared);
+//                    mpz_mod(solution_X, solution_X, N); /* reduce x to modulo N */
+                    tempis = mpz_class(N);
+                    solution_X = solution_X % tempis;
+                    
+//                    mpz_mul(solution_Y, solution_Y,
+//                            smooth_numbers[i].value_x_squared);
+                    tempis = mpz_class(smooth_numbers[i].value_x_squared);
+                    solution_Y = solution_Y * tempis;
+                    
                     /*TODO: handling huge stuff here, there is no modulo N like in the solution_X case!
                      * eliminate squares as long as you go*/
                 }
             }
             
-            mpz_sqrt(solution_Y, solution_Y);
-            mpz_mod(solution_Y, solution_Y, N); /* y = sqrt(MUL(xi²-n)) mod N */
+//            mpz_sqrt(solution_Y, solution_Y);
+            solution_Y = sqrt(solution_Y);
+//            mpz_mod(solution_Y, solution_Y, N); /* y = sqrt(MUL(xi²-n)) mod N */
+            mpz_class tempN(N);
+            solution_Y = solution_Y % tempN;
             
-            mpz_sub(solution_X, solution_X, solution_Y);
+//            mpz_sub(solution_X, solution_X, solution_Y);
+            solution_X = solution_X - solution_Y;
             
-            mpz_gcd(solution_X, solution_X, N);
+//            mpz_gcd(solution_X, solution_X, N);
+            solution_X = gcd(solution_X, tempN);
             
-            if (mpz_cmp(solution_X, N) != 0 && mpz_cmp_ui(solution_X, 1) != 0) /* factor can be 1 or N, try another relation */
+//            if (mpz_cmp(solution_X, N) != 0 && mpz_cmp_ui(solution_X, 1) != 0) /* factor can be 1 or N, try another relation */
+//                break;
+            if (solution_X != tempN && solution_X != 1)
                 break;
         }
         
-        unsigned long hej = mpz_get_ui(solution_X);
-        cout << "Warning: Division by " << hej << endl;
-        mpz_cdiv_q(solution_Y, N, solution_X);
+        mpz_class tempN2(N);
+//        unsigned long hej = mpz_get_ui(solution_X);
+        cout << "Warning: Division by " << solution_X << endl;
+//        mpz_cdiv_q(solution_Y, N, solution_X);
+        solution_Y = tempN2 / solution_X;
         
-//        cout << "lösningar: ";
-//        print(solution_Y);
-//        print(solution_X);
+//        unsigned long tjenare = solution_X.get_ui();
+//        
+//        if ((tempN2 / tjenare) * tjenare == tempN2) {
+//            solution_X = tjenare;
+//            solution_Y = tempN2/tjenare;
+//        }
+        
+        cout << "lösningar: " << solution_X << " * " << solution_Y;
         
     }
     
-    void fetch_answers(mpz_t x, mpz_t y) {
-        mpz_set(x, solution_X);
-        mpz_set(y, solution_Y);
+    mpz_class fetchX() {
+        return solution_X;
     }
-    
 
+    mpz_class fetchY() {
+        return solution_Y;
+    }
+    
     /************************************************/
     /*              Eratosthenes sieve              */
     /************************************************/
@@ -650,9 +676,9 @@ public:
         //Find primes, base included
         base++;
         
-//        cout << "hej: " << base / 64 + 1 << endl;
-//        numbers = new char[base / 64 + 1];
-//        numbers = (char*) calloc(base / 64 + 1, sizeof(uint64_t));
+        //        cout << "hej: " << base / 64 + 1 << endl;
+        //        numbers = new char[base / 64 + 1];
+        //        numbers = (char*) calloc(base / 64 + 1, sizeof(uint64_t));
         numbers = (char*) new uint64_t[base / 64 + 1];
         base_ref = base;
         
@@ -699,7 +725,7 @@ public:
             }
         }
         
-//        free(numbers);
+        //        free(numbers);
     }
     
     /* Fill the array with only primes where n is a quadratic residue: x² = n (mod p) */
@@ -707,19 +733,19 @@ public:
         int64_t j, i;
         mpz_t f;
         mpz_init(f);
-//        basePrimes = new 
-//        basePrimes.resize(basePrimes.size()+1);
+        //        basePrimes = new
+        //        basePrimes.resize(basePrimes.size()+1);
         basePrimes.push_back(2);
         for (j = 1, i = 3; i < base_ref; i++) {
             mpz_set_ui(f, (unsigned long) i);
             if ((GET_BIT_AT(i)) == 1 && mpz_jacobi(n, f) == 1) {
-//                basePrimes[j] = i;
+                //                basePrimes[j] = i;
                 basePrimes.push_back(i);
                 j++;
             }
         }
         
-//        free(numbers);
+        //        free(numbers);
         quadraticPrimesFound = j;
         return j;
     }
@@ -743,7 +769,7 @@ public:
     
     void print(mpz_t a) {
         char * s;
-//        cout << "VI KANSKE VET: " << &a;
+        //        cout << "VI KANSKE VET: " << &a;
         s = mpz_get_str(NULL, 10, a);
         cout <<  s << endl;
         
@@ -760,6 +786,23 @@ public:
             mpz_set(b, c);
 		}
 		mpz_set(ret, b);
+	}
+    
+    mpz_class gcd(mpz_class a, mpz_class b) {
+		mpz_class c;
+//        mpz_init(c);
+        mpz_class zero;
+//        mpz_init(zero);
+		while (a != 0) {
+//            mpz_set(c, a);
+            c = a;
+            a = b % a;
+            b = c;
+//            mpz_mod(a, b, a);
+//            mpz_set(b, c);
+		}
+//		mpz_set(ret, b);
+        return b;
 	}
     
     int64_t toInt(mpz_t v) {
