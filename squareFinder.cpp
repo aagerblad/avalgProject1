@@ -15,8 +15,18 @@ public:
 	vector<mpz_class> getSquares(mpz_class N) {
 
 
-
+		mpz_class B(generateBaseLimit(N))
 		bitset<B> matrix[B];
+
+		vector<uint64> pv = getPrimes();
+		for (int i = 0; i < pv.size(); ++i)
+		{
+			if (/* condition */)
+			{
+				/* code */
+			}
+		}
+
 
 		cout << matrix[1] << endl;
 
